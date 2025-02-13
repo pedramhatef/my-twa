@@ -6,7 +6,7 @@
     <title>Telegram Mini App</title>
 
     <!-- Load TonConnect SDK -->
-    <script src="https://unpkg.com/@tonconnect/sdk@2.0.3/dist/tonconnect-sdk.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
 
     <style>
         body {
@@ -45,11 +45,12 @@
     <button id="startGame">Start Game</button>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        // Ensure the script loads fully before accessing TonConnect
+        window.addEventListener("load", function () {
             console.log("Checking TonConnect...");
 
-            // Ensure TonConnect is loaded properly
-            const TonConnect = window.TonConnect || window.tonconnect || null;
+            // Try accessing TonConnect from the SDK object
+            const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
 
             if (TonConnect) {
                 console.log("TonConnect is available:", TonConnect);
