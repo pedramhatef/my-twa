@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-
-    <!-- Load TonConnect SDK -->
     <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,66 +42,45 @@
     <button id="startGame">Start Game</button>
 
     <script>
-        window.addEventListener("load", async function () {
-    console.log("Checking TonConnect...");
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("Initializing TonConnect...");
 
-    const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
+            const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
 
-    if (TonConnect) {
-        console.log("TonConnect is available:", TonConnect);
-
-        const tonConnect = new TonConnect({
-            manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
-        });
-
-        const connectButton = document.getElementById("connectWallet");
-
-        connectButton.addEventListener("click", async () => {
-            try {
-                // Fetch available wallets
-                const wallets = await tonConnect.getWallets();
-                console.log("Available wallets:", wallets);
-
-                if (wallets.length === 0) {
-                    alert("No wallets found. Make sure you have a TON wallet installed.");
-                    return;
-                }
-
-                // Show available wallets in console
-                wallets.forEach((wallet, index) => {
-                    console.log(`Wallet ${index + 1}:`, wallet);
-                });
-
-                // Select the first available wallet
-                const selectedWallet = wallets[0];
-
-                console.log("Connecting to wallet:", selectedWallet.name);
-                console.log("Wallet Universal Link:", selectedWallet.universalLink);
-                console.log("Wallet Bridge URL:", selectedWallet.bridgeUrl);
-
-                // Try opening the universal link manually if needed
-                window.open(selectedWallet.universalLink, "_blank");
-
-                // Use the correct connection method
-                await tonConnect.connect({
-                    universalLink: selectedWallet.universalLink,
-                    bridgeUrl: selectedWallet.bridgeUrl
-                });
-
-                alert("Wallet Connected!");
-                connectButton.textContent = "Connected ✅";
-                connectButton.style.backgroundColor = "#28a745";
-            } catch (error) {
-                console.error("Wallet connection failed:", error);
-                alert("Error connecting wallet. Check console for details.");
+            if (!TonConnect) {
+                console.error("TonConnect is not loaded. Check script URL.");
+                alert("TonConnect is not defined. Make sure the script is loaded correctly.");
+                return;
             }
+
+            console.log("TonConnect is available:", TonConnect);
+
+            const tonConnect = new TonConnect({
+                manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
+            });
+
+            document.getElementById("connectWallet").addEventListener("click", async () => {
+                try {
+                    console.log("Opening Wallet Selection Modal...");
+
+                    // Open TonConnect UI modal for wallet selection
+                    tonConnect.ui.openModal();
+
+                    tonConnect.onStatusChange((walletInfo) => {
+                        console.log("Wallet connected:", walletInfo);
+                        alert("Wallet Connected!");
+                    });
+
+                } catch (error) {
+                    console.error("Wallet connection failed:", error);
+                    alert("Error connecting wallet.");
+                }
+            });
+
+            document.getElementById("startGame").addEventListener("click", () => {
+                alert("Game Started!");
+            });
         });
-
-    } else {
-        console.error("TonConnect is still not defined. Check script URL or console for errors.");
-    }
-});
-
     </script>
 </body>
 </html>
