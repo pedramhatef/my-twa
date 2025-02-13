@@ -42,27 +42,34 @@
     <button id="startGame">Start Game</button>
 
     <script>
-        const tonConnect = new TONConnect({
-            manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
-        });
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof TONConnect !== 'undefined') {
+                const tonConnect = new TONConnect({
+                    manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
+                });
 
-        document.getElementById("connectWallet").addEventListener("click", async () => {
-            try {
-                const wallets = await tonConnect.getWallets();
-                if (wallets.length > 0) {
-                    await tonConnect.connectWallet(wallets[0].universalLink);
-                    alert('Wallet Connected!');
-                } else {
-                    alert('No TON wallet found.');
-                }
-            } catch (error) {
-                console.error('Wallet connection failed:', error);
-                alert('Error connecting wallet.');
+                document.getElementById("connectWallet").addEventListener("click", async () => {
+                    try {
+                        const wallets = await tonConnect.getWallets();
+                        if (wallets.length > 0) {
+                            await tonConnect.connectWallet(wallets[0].universalLink);
+                            alert('Wallet Connected!');
+                        } else {
+                            alert('No TON wallet found.');
+                        }
+                    } catch (error) {
+                        console.error('Wallet connection failed:', error);
+                        alert('Error connecting wallet.');
+                    }
+                });
+
+                document.getElementById("startGame").addEventListener("click", () => {
+                    alert("Game Started!");
+                });
+            } else {
+                console.error('TONConnect is not defined.');
+                alert('TONConnect is not defined. Make sure the script is loaded correctly.');
             }
-        });
-
-        document.getElementById("startGame").addEventListener("click", () => {
-            alert("Game Started!");
         });
     </script>
 </body>
