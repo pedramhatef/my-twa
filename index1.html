@@ -45,11 +45,9 @@
     <button id="startGame">Start Game</button>
 
     <script>
-        // Ensure the script loads fully before accessing TonConnect
-        window.addEventListener("load", function () {
+        window.addEventListener("load", async function () {
             console.log("Checking TonConnect...");
 
-            // Try accessing TonConnect from the SDK object
             const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
 
             if (TonConnect) {
@@ -63,13 +61,30 @@
 
                 connectButton.addEventListener("click", async () => {
                     try {
-                        await tonConnect.connect();
-                        alert('Wallet Connected!');
+                        // Fetch available wallets
+                        const wallets = await tonConnect.getWallets();
+                        console.log("Available wallets:", wallets);
+
+                        if (wallets.length === 0) {
+                            alert("No wallets found. Install a TON wallet first.");
+                            return;
+                        }
+
+                        // Select the first available wallet
+                        const selectedWallet = wallets[0];
+
+                        // Use the correct connection method
+                        await tonConnect.connect({
+                            universalLink: selectedWallet.universalLink,
+                            bridgeUrl: selectedWallet.bridgeUrl
+                        });
+
+                        alert("Wallet Connected!");
                         connectButton.textContent = "Connected ✅";
                         connectButton.style.backgroundColor = "#28a745";
                     } catch (error) {
-                        console.error('Wallet connection failed:', error);
-                        alert('Error connecting wallet.');
+                        console.error("Wallet connection failed:", error);
+                        alert("Error connecting wallet. Check console for details.");
                     }
                 });
 
