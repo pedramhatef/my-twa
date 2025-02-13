@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,21 +42,20 @@
     <button id="startGame">Start Game</button>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
             if (typeof TonConnect !== 'undefined') {
-                const tonConnect = new ToNConnect({
+                const tonConnect = new TonConnect({
                     manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
                 });
 
-                document.getElementById("connectWallet").addEventListener("click", async () => {
+                const connectButton = document.getElementById("connectWallet");
+
+                connectButton.addEventListener("click", async () => {
                     try {
-                        const wallets = await tonConnect.getWallets();
-                        if (wallets.length > 0) {
-                            await tonConnect.connectWallet(wallets[0].universalLink);
-                            alert('Wallet Connected!');
-                        } else {
-                            alert('No TON wallet found.');
-                        }
+                        await tonConnect.connect();
+                        alert('Wallet Connected!');
+                        connectButton.textContent = "Connected ✅";
+                        connectButton.style.backgroundColor = "#28a745";
                     } catch (error) {
                         console.error('Wallet connection failed:', error);
                         alert('Error connecting wallet.');
@@ -66,9 +65,10 @@
                 document.getElementById("startGame").addEventListener("click", () => {
                     alert("Game Started!");
                 });
+
             } else {
-                console.error('TONConnect is not defined.');
-                alert('TONConnect is not defined. Make sure the script is loaded correctly.');
+                console.error('TonConnect is not defined.');
+                alert('TonConnect is not loaded. Check your script URL.');
             }
         });
     </script>
