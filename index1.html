@@ -59,6 +59,16 @@
                 manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
             });
 
+            tonConnect.onStatusChange((walletInfo) => {
+    console.log("Wallet connection status changed:", walletInfo);
+    if (walletInfo.connected) {
+        alert("Wallet connected successfully!");
+    } else {
+        console.log("Failed to connect wallet:", walletInfo);
+    }
+});
+
+
             document.getElementById("connectWallet").addEventListener("click", async () => {
     try {
         // Ensure that TON Connect is properly initialized
@@ -82,17 +92,9 @@
             return;
         }
 
-        // Initiate connection with the bridge URL
-        console.log("Connecting via wallet bridge...");
-        await tonConnect.connect({ bridgeUrl: selectedWallet.bridgeUrl });
-
-        // Listen for connection status changes
-        tonConnect.onStatusChange((walletInfo) => {
-            console.log("Wallet connection status changed:", walletInfo);
-            if (walletInfo.connected) {
-                alert("Wallet connected successfully!");
-            }
-        });
+        // Open the universalLink URL to trigger the wallet connection flow
+        console.log("Opening universal link to connect...");
+        window.location.href = selectedWallet.universalLink;
 
     } catch (error) {
         console.error("Error during wallet connection:", error);
