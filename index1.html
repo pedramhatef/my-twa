@@ -3,118 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <title>TON Wallet Connection</title>
+    <script type="module">
+        import { TonConnect } from "@tonconnect/sdk";
+
+        // Initialize TonConnect with your manifest file
+        const tonConnect = new TonConnect({
+            manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
+        });
+
+        // Function to connect to Telegram Wallet
+        async function connectWallet() {
+            try {
+                console.log("🚀 Initializing TonConnect...");
+
+                // Get available wallets
+                const wallets = await tonConnect.getWallets();
+                console.log("🛠 Available wallets:", wallets);
+
+                // Find Telegram Wallet in the available wallets
+                const wallet = wallets.find(w => w.appName === "telegram-wallet");
+
+                if (!wallet) {
+                    alert("⚠️ Telegram Wallet not found! Please install the Telegram app.");
+                    return;
+                }
+
+                console.log("🔗 Connecting to Wallet:", wallet);
+
+                // Open the Telegram Wallet link
+                if (wallet.universalLink) {
+                    window.location.href = wallet.universalLink;
+                } else {
+                    alert("❌ Could not open Telegram Wallet. Try manually opening: https://t.me/wallet?attach=wallet");
+                }
+
+                // Listen for connection status changes
+                tonConnect.onStatusChange((walletInfo) => {
+                    console.log("🔄 Wallet connection status changed:", walletInfo);
+
+                    if (walletInfo.connected) {
+                        alert("✅ Wallet connected successfully!");
+                        console.log("Connected Wallet Info:", walletInfo);
+                    } else {
+                        console.log("⚠️ Failed to connect wallet:", walletInfo);
+                    }
+                });
+
+            } catch (error) {
+                console.error("❌ Error connecting wallet:", error);
+                alert("❌ Error connecting wallet. Check console for details.");
+            }
+        }
+
+        // Wait until the DOM is loaded to add event listener
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("connect-wallet-btn").addEventListener("click", connectWallet);
+        });
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        h1 {
-            margin-top: 50px;
-            color: #333;
+            margin: 50px;
         }
         button {
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 16px;
-            background-color: #007bff;
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #0088cc;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #0077b6;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Telegram Mini App!</h1>
 
-    <!-- Connect Wallet Button -->
-    <button id="connectWallet">Connect Wallet</button>
+    <h1>Connect Your TON Wallet</h1>
+    <button id="connect-wallet-btn">Connect Wallet</button>
 
-    <!-- Start Game Button -->
-    <button id="startGame">Start Game</button>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            console.log("Initializing TonConnect...");
-
-            const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
-
-            if (!TonConnect) {
-                console.error("TonConnect is not loaded. Check script URL.");
-                alert("TonConnect is not defined. Make sure the script is loaded correctly.");
-                return;
-            }
-
-const tonConnect = new TonConnect({
-    manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
-});
-
-(async () => {
-    const wallets = await tonConnect.getWallets();
-    console.log("🛠 Available wallets:", wallets);
-
-    const wallet = wallets.find(w => w.appName === "telegram-wallet");
-    if (!wallet) {
-        alert("⚠️ Telegram Wallet not found!");
-        return;
-    }
-
-    console.log("🔗 Connecting to Wallet:", wallet);
-
-    // Force open in Telegram if possible
-    window.location.href = wallet.universalLink || "https://t.me/wallet?attach=wallet";
-
-})();
-    
-
-});
-
-
-            document.getElementById("connectWallet").addEventListener("click", async () => {
-    try {
-        // Ensure that TON Connect is properly initialized
-        console.log("Initializing wallet connection...");
-
-        // Fetch available wallets (using tonConnect)
-        const wallets = await tonConnect.getWallets();
-        console.log("Available wallets:", wallets);
-
-        if (wallets.length === 0) {
-            alert("No TON wallets found. Please install a compatible wallet.");
-            return;
-        }
-
-        // Select a wallet that has a valid universalLink (Telegram Wallet)
-        const selectedWallet = wallets.find(wallet => wallet.universalLink);
-        console.log("Selected Wallet:", selectedWallet);
-
-        if (!selectedWallet || !selectedWallet.universalLink) {
-            alert("No available wallet with a valid universal link.");
-            return;
-        }
-
-        // Open the universalLink URL to trigger the wallet connection flow
-        console.log("Opening universal link to connect...");
-        window.location.href = selectedWallet.universalLink;
-
-    } catch (error) {
-        console.error("Error during wallet connection:", error);
-        alert("An error occurred while connecting to the wallet.");
-    }
-});
-
-            document.getElementById("startGame").addEventListener("click", () => {
-                alert("Game Started!");
-            });
-        );
-    </script>
 </body>
 </html>
