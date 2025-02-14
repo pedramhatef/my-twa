@@ -6,9 +6,18 @@
     <title>TON Wallet Connection</title>
     
     <!-- ✅ Load TonConnect SDK via CDN -->
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js" onload="sdkLoaded()" onerror="sdkLoadError()"></script>
 
     <script>
+        function sdkLoaded() {
+            console.log("✅ TonConnect SDK loaded successfully.");
+        }
+
+        function sdkLoadError() {
+            console.error("❌ Failed to load TonConnect SDK.");
+            alert("❌ Failed to load TonConnect SDK. Check console for details.");
+        }
+
         document.addEventListener("DOMContentLoaded", async () => {
             try {
                 if (!window.TonConnect) {
