@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TON Wallet Connection</title>
     
-    <!-- Load TonConnect SDK from CDN -->
+    <!-- ✅ Load TonConnect SDK via CDN -->
     <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            const TonConnect = window.TonConnect;
+            const TonConnect = window.TonConnect;  // ✅ Access SDK from window object
             const tonConnect = new TonConnect.TonConnect({
                 manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
             });
