@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>  <!-- ✅ Corrected SDK link -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,15 +46,15 @@
             console.log("Initializing TonConnect...");
 
             if (typeof TonConnect === 'undefined') {
-                console.error("TonConnect is not loaded. Check the script URL.");
-                alert("TonConnect is not loaded. Please refresh the page.");
+                console.error("❌ TonConnect is not loaded. Check the script URL.");
+                alert("TonConnect failed to load. Please refresh the page.");
                 return;
             }
 
-            console.log("TonConnect is available:", TonConnect);
+            console.log("✅ TonConnect Loaded:", TonConnect);
             
             // Initialize TonConnect with your manifest URL
-            const tonConnect = new TonConnect({
+            const tonConnect = new TonConnect.TonConnect({
                 manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
             });
 
@@ -84,16 +84,16 @@
                     // Open wallet selection modal (for Telegram Mini Apps)
                     await tonConnect.connect({ universalLink: selectedWallet.universalLink });
 
-                    console.log("Wallet connection initiated...");
+                    console.log("✅ Wallet connection initiated...");
 
                     // Listen for successful connection
                     tonConnect.onStatusChange((walletInfo) => {
-                        console.log("Wallet connected:", walletInfo);
+                        console.log("✅ Wallet connected:", walletInfo);
                         alert("Wallet Connected!");
                     });
 
                 } catch (error) {
-                    console.error("Wallet connection failed:", error);
+                    console.error("❌ Wallet connection failed:", error);
                     alert("Error connecting wallet. Check the console for details.");
                 }
             });
