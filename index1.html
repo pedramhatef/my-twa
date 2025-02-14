@@ -27,7 +27,7 @@
             let retryCount = 0;
 
             const checkSDKLoaded = (resolve, reject) => {
-                if (window.sdkLoadedFlag) {
+                if (window.sdkLoadedFlag && window.TonConnect) {
                     resolve(window.TonConnect);
                 } else if (retryCount < maxRetries) {
                     retryCount++;
@@ -42,7 +42,7 @@
                 .then((TonConnect) => {
                     console.log("🔧 TonConnect SDK is available");
                     try {
-                        const tonConnect = new TonConnect.TonConnect({
+                        const tonConnectInstance = new TonConnect({
                             manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
                         });
 
@@ -51,7 +51,7 @@
                                 console.log("🚀 Initializing TonConnect...");
 
                                 // Open TON Wallet directly
-                                const universalLink = tonConnect.connect({ jsBridgeKey: 'tonkeeper' });
+                                const universalLink = tonConnectInstance.connect({ jsBridgeKey: 'tonkeeper' });
                                 
                                 console.log("🔗 Universal Link:", universalLink);
                                 
@@ -62,7 +62,7 @@
                                 }
 
                                 // Listen for connection status changes
-                                tonConnect.onStatusChange((walletInfo) => {
+                                tonConnectInstance.onStatusChange((walletInfo) => {
                                     console.log("🔄 Wallet connection status changed:", walletInfo);
 
                                     if (walletInfo.connected) {
