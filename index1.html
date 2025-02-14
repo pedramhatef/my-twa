@@ -53,19 +53,26 @@
                 return;
             }
 
-            const tonConnect = new TonConnect({
+const tonConnect = new TonConnect({
     manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
 });
 
-tonConnect.onStatusChange((walletInfo) => {
-    console.log("Wallet connection status changed:", walletInfo);
-    
-    if (walletInfo.connected) {
-        alert("✅ Wallet connected successfully!");
-        console.log("Connected Wallet Address:", walletInfo.account.address);
-    } else {
-        console.warn("❌ Wallet did not connect:", walletInfo);
-        alert("⚠️ Wallet connection failed or was canceled.");
+(async () => {
+    const wallets = await tonConnect.getWallets();
+    console.log("🛠 Available wallets:", wallets);
+
+    const wallet = wallets.find(w => w.appName === "telegram-wallet");
+    if (!wallet) {
+        alert("⚠️ Telegram Wallet not found!");
+        return;
+    }
+
+    console.log("🔗 Connecting to Wallet:", wallet);
+
+    // Force open in Telegram if possible
+    window.location.href = wallet.universalLink || "https://t.me/wallet?attach=wallet";
+
+})();
     }
 
 });
