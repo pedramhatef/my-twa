@@ -10,43 +10,51 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            const TonConnect = window.TonConnect;  // ✅ Access SDK from window object
-            const tonConnect = new TonConnect.TonConnect({
-                manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
-            });
-
-            async function connectWallet() {
-                try {
-                    console.log("🚀 Initializing TonConnect...");
-
-                    // Open TON Wallet directly
-                    const universalLink = tonConnect.connect({ jsBridgeKey: 'tonkeeper' });
-                    
-                    if (universalLink) {
-                        window.location.href = universalLink;
-                    } else {
-                        alert("❌ Could not open Telegram Wallet. Try manually opening: https://t.me/wallet?attach=wallet");
-                    }
-
-                    // Listen for connection status changes
-                    tonConnect.onStatusChange((walletInfo) => {
-                        console.log("🔄 Wallet connection status changed:", walletInfo);
-
-                        if (walletInfo.connected) {
-                            alert("✅ Wallet connected successfully!");
-                            console.log("Connected Wallet Info:", walletInfo);
-                        } else {
-                            console.log("⚠️ Failed to connect wallet:", walletInfo);
-                        }
-                    });
-
-                } catch (error) {
-                    console.error("❌ Error connecting wallet:", error);
-                    alert("❌ Error connecting wallet. Check console for details.");
+            try {
+                if (!window.TonConnect) {
+                    throw new Error("TonConnect SDK not loaded.");
                 }
-            }
+                const TonConnect = window.TonConnect;  // ✅ Access SDK from window object
+                const tonConnect = new TonConnect.TonConnect({
+                    manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
+                });
 
-            document.getElementById("connect-wallet-btn").addEventListener("click", connectWallet);
+                async function connectWallet() {
+                    try {
+                        console.log("🚀 Initializing TonConnect...");
+
+                        // Open TON Wallet directly
+                        const universalLink = tonConnect.connect({ jsBridgeKey: 'tonkeeper' });
+                        
+                        if (universalLink) {
+                            window.location.href = universalLink;
+                        } else {
+                            alert("❌ Could not open Telegram Wallet. Try manually opening: https://t.me/wallet?attach=wallet");
+                        }
+
+                        // Listen for connection status changes
+                        tonConnect.onStatusChange((walletInfo) => {
+                            console.log("🔄 Wallet connection status changed:", walletInfo);
+
+                            if (walletInfo.connected) {
+                                alert("✅ Wallet connected successfully!");
+                                console.log("Connected Wallet Info:", walletInfo);
+                            } else {
+                                console.log("⚠️ Failed to connect wallet:", walletInfo);
+                            }
+                        });
+
+                    } catch (error) {
+                        console.error("❌ Error connecting wallet:", error);
+                        alert("❌ Error connecting wallet. Check console for details.");
+                    }
+                }
+
+                document.getElementById("connect-wallet-btn").addEventListener("click", connectWallet);
+            } catch (error) {
+                console.error("❌ Initialization error:", error);
+                alert("❌ Initialization error. Check console for details.");
+            }
         });
     </script>
 
