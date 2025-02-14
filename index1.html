@@ -61,9 +61,10 @@
 
             document.getElementById("connectWallet").addEventListener("click", async () => {
     try {
-        console.log("Fetching available wallets...");
+        // Ensure that TON Connect is properly initialized
+        console.log("Initializing wallet connection...");
 
-        // Get available wallets
+        // Fetch available wallets (using tonConnect)
         const wallets = await tonConnect.getWallets();
         console.log("Available wallets:", wallets);
 
@@ -72,31 +73,32 @@
             return;
         }
 
-        // Debug log for wallet selection
+        // Select a wallet that has a valid universalLink (Telegram Wallet)
         const selectedWallet = wallets.find(wallet => wallet.universalLink);
         console.log("Selected Wallet:", selectedWallet);
-        console.log("Selected Wallet universalLink:", selectedWallet?.universalLink);
 
         if (!selectedWallet || !selectedWallet.universalLink) {
             alert("No available wallet with a valid universal link.");
             return;
         }
 
-        console.log("Connecting to wallet via bridge:", selectedWallet);
-
-        // Try connecting using the bridge URL
+        // Initiate connection with the bridge URL
+        console.log("Connecting via wallet bridge...");
         await tonConnect.connect({ bridgeUrl: selectedWallet.bridgeUrl });
-        console.log("Wallet connection initiated via bridge...");
 
+        // Listen for connection status changes
         tonConnect.onStatusChange((walletInfo) => {
-            console.log("Wallet connected:", walletInfo);
-            alert("Wallet Connected!");
+            console.log("Wallet connection status changed:", walletInfo);
+            if (walletInfo.connected) {
+                alert("Wallet connected successfully!");
+            }
         });
 
     } catch (error) {
-        console.error("Wallet connection failed:", error);
-        alert("Error connecting wallet.");
+        console.error("Error during wallet connection:", error);
+        alert("An error occurred while connecting to the wallet.");
     }
+});
 });
 
 
