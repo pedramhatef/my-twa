@@ -9,6 +9,7 @@
     <script>
         function sdkLoaded() {
             console.log("✅ TonConnect SDK loaded successfully.");
+            window.sdkLoadedFlag = true;  // Set a flag when the SDK is loaded
         }
 
         function sdkLoadError() {
@@ -26,7 +27,7 @@
             let retryCount = 0;
 
             const checkSDKLoaded = (resolve, reject) => {
-                if (window.TonConnect) {
+                if (window.sdkLoadedFlag) {
                     resolve(window.TonConnect);
                 } else if (retryCount < maxRetries) {
                     retryCount++;
