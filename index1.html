@@ -53,19 +53,21 @@
                 return;
             }
 
-            console.log("TonConnect is available:", TonConnect);
-
             const tonConnect = new TonConnect({
-                manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
-            });
+    manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
+});
 
-            tonConnect.onStatusChange((walletInfo) => {
+tonConnect.onStatusChange((walletInfo) => {
     console.log("Wallet connection status changed:", walletInfo);
+    
     if (walletInfo.connected) {
-        alert("Wallet connected successfully!");
+        alert("✅ Wallet connected successfully!");
+        console.log("Connected Wallet Address:", walletInfo.account.address);
     } else {
-        console.log("Failed to connect wallet:", walletInfo);
+        console.warn("❌ Wallet did not connect:", walletInfo);
+        alert("⚠️ Wallet connection failed or was canceled.");
     }
+
 });
 
 
