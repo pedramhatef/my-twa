@@ -4,17 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TON Wallet Connection</title>
-
+    
+    <!-- ✅ Load TonConnect SDK via CDN -->
     <script>
         function sdkLoaded() {
             console.log("✅ TonConnect SDK loaded successfully.");
-            
-            document.addEventListener("DOMContentLoaded", async () => {
+        }
+
+        function sdkLoadError() {
+            console.error("❌ Failed to load TonConnect SDK.");
+            alert("❌ Failed to load TonConnect SDK. Check console for details.");
+        }
+    </script>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js" onload="sdkLoaded()" onerror="sdkLoadError()"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const checkSDKLoaded = (resolve) => {
+                if (window.TonConnect) {
+                    resolve(window.TonConnect);
+                } else {
+                    setTimeout(() => checkSDKLoaded(resolve), 100);
+                }
+            };
+
+            new Promise(checkSDKLoaded).then((TonConnect) => {
                 try {
-                    if (!window.TonConnect) {
-                        throw new Error("TonConnect SDK not loaded.");
-                    }
-                    const TonConnect = window.TonConnect;  // ✅ Access SDK from window object
                     const tonConnect = new TonConnect.TonConnect({
                         manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
                     });
@@ -56,16 +71,8 @@
                     alert("❌ Initialization error. Check console for details.");
                 }
             });
-        }
-
-        function sdkLoadError() {
-            console.error("❌ Failed to load TonConnect SDK.");
-            alert("❌ Failed to load TonConnect SDK. Check console for details.");
-        }
+        });
     </script>
-    
-    <!-- ✅ Load TonConnect SDK via CDN -->
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js" onload="sdkLoaded()" onerror="sdkLoadError()"></script>
 
     <style>
         body {
