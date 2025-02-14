@@ -60,33 +60,45 @@
             });
 
             document.getElementById("connectWallet").addEventListener("click", async () => {
-                try {
-                    console.log("Fetching available wallets...");
+    try {
+        console.log("Fetching available wallets...");
 
-                    // Get available wallets
-                    const wallets = await tonConnect.getWallets();
-                    console.log("Available wallets:", wallets);
+        // Get available wallets
+        const wallets = await tonConnect.getWallets();
+        console.log("Available wallets:", wallets);
 
-                    if (wallets.length > 0) {
-                        // Open the first available wallet for connection
-                        await tonConnect.connect({ universalLink: wallets[0].universalLink });
-                        console.log("Wallet connection initiated...");
+        if (wallets.length === 0) {
+            alert("No TON wallets found. Please install a compatible wallet.");
+            return;
+        }
 
-                        // Listen for connection success
-                        tonConnect.onStatusChange((walletInfo) => {
-                            console.log("Wallet connected:", walletInfo);
-                            alert("Wallet Connected!");
-                        });
+        // Find a wallet with a valid `universalLink`
+        const selectedWallet = wallets.find(wallet => wallet.universalLink);
 
-                    } else {
-                        alert("No TON wallet found. Please install a compatible wallet.");
-                    }
+        if (!selectedWallet) {
+            alert("No available wallet with a valid link.");
+            return;
+        }
 
-                } catch (error) {
-                    console.error("Wallet connection failed:", error);
-                    alert("Error connecting wallet.");
-                }
-            });
+        console.log("Connecting to wallet:", selectedWallet);
+
+        // Use the correct universal link to initiate the connection
+        await tonConnect.connect({ universalLink: selectedWallet.universalLink });
+
+        console.log("Wallet connection initiated...");
+
+        // Listen for connection success
+        tonConnect.onStatusChange((walletInfo) => {
+            console.log("Wallet connected:", walletInfo);
+            alert("Wallet Connected!");
+        });
+
+    } catch (error) {
+        console.error("Wallet connection failed:", error);
+        alert("Error connecting wallet.");
+    }
+});
+});
 
             document.getElementById("startGame").addEventListener("click", () => {
                 alert("Game Started!");
