@@ -1,5 +1,7 @@
 {
   "url": "https://pedramhatef.github.io/my-twa/",
   "name": "My Telegram Web App",
-  "iconUrl": "https://pedramhatef.github.io/my-twa/icon.png"
+  "iconUrl": "https://pedramhatef.github.io/my-twa/icon.png",
+  "termsUrl": "https://pedramhatef.github.io/my-twa/terms.html",
+  "privacyUrl": "https://pedramhatef.github.io/my-twa/privacy.html"
 }
