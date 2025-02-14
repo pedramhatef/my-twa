@@ -82,15 +82,11 @@
             return;
         }
 
-        console.log("Connecting to wallet:", selectedWallet);
+        console.log("Connecting to wallet via bridge:", selectedWallet);
 
-        // Connect using universalLink if it exists
-        if (selectedWallet.universalLink) {
-            await tonConnect.connect({ universalLink: selectedWallet.universalLink });
-            console.log("Wallet connection initiated...");
-        } else {
-            console.error("No valid universalLink found for selected wallet.");
-        }
+        // Try connecting using the bridge URL
+        await tonConnect.connect({ bridgeUrl: selectedWallet.bridgeUrl });
+        console.log("Wallet connection initiated via bridge...");
 
         tonConnect.onStatusChange((walletInfo) => {
             console.log("Wallet connected:", walletInfo);
@@ -102,6 +98,8 @@
         alert("Error connecting wallet.");
     }
 });
+
+
 
             document.getElementById("startGame").addEventListener("click", () => {
                 alert("Game Started!");
