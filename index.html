@@ -1,14 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/my-twa/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-    <script type="module" crossorigin src="/my-twa/assets/index-BhE6V9Vj.js"></script>
-    <link rel="stylesheet" crossorigin href="/my-twa/assets/index-CAgCJweA.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TON Wallet Connection</title>
+    
+    <!-- Load TonConnect SDK from CDN -->
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const TonConnect = window.TonConnect;
+            const tonConnect = new TonConnect.TonConnect({
+                manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
+            });
+
+            async function connectWallet() {
+                try {
+                    console.log("🚀 Initializing TonConnect...");
+
+                    // Get available wallets
+                    const wallets = await tonConnect.getWallets();
+                    console.log("🛠 Available wallets:", wallets);
+
+                    // Find Telegram Wallet in the available wallets
+                    const wallet = wallets.find(w => w.appName === "telegram-wallet");
+
+                    if (!wallet) {
+                        alert("⚠️ Telegram Wallet not found! Please install the Telegram app.");
+                        return;
+                    }
+
+                    console.log("🔗 Connecting to Wallet:", wallet);
+
+                    // Open the Telegram Wallet link
+                    if (wallet.universalLink) {
+                        window.location.href = wallet.universalLink;
+                    } else {
+                        alert("❌ Could not open Telegram Wallet. Try manually opening: https://t.me/wallet?attach=wallet");
+                    }
+
+                    // Listen for connection status changes
+                    tonConnect.onStatusChange((walletInfo) => {
+                        console.log("🔄 Wallet connection status changed:", walletInfo);
+
+                        if (walletInfo.connected) {
+                            alert("✅ Wallet connected successfully!");
+                            console.log("Connected Wallet Info:", walletInfo);
+                        } else {
+                            console.log("⚠️ Failed to connect wallet:", walletInfo);
+                        }
+                    });
+
+                } catch (error) {
+                    console.error("❌ Error connecting wallet:", error);
+                    alert("❌ Error connecting wallet. Check console for details.");
+                }
+            }
+
+            document.getElementById("connect-wallet-btn").addEventListener("click", connectWallet);
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0077b6;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Connect Your TON Wallet</h1>
+    <button id="connect-wallet-btn">Connect Wallet</button>
+
+</body>
 </html>
