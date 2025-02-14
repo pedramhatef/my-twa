@@ -20,15 +20,19 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
+            console.log("📄 DOMContentLoaded event fired");
+
             const checkSDKLoaded = (resolve) => {
                 if (window.TonConnect) {
                     resolve(window.TonConnect);
                 } else {
+                    console.log("⚠️ TonConnect SDK not yet loaded, retrying...");
                     setTimeout(() => checkSDKLoaded(resolve), 100);
                 }
             };
 
             new Promise(checkSDKLoaded).then((TonConnect) => {
+                console.log("🔧 TonConnect SDK is available");
                 try {
                     const tonConnect = new TonConnect.TonConnect({
                         manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
