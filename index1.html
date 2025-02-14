@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>  <!-- ✅ Corrected SDK link -->
+
+    <script type="module">
+        import { TonConnect } from "https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js";
+        window.TonConnect = TonConnect; // ✅ Expose it globally
+    </script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,16 +50,16 @@
         document.addEventListener("DOMContentLoaded", async function () {
             console.log("Initializing TonConnect...");
 
-            if (typeof TonConnect === 'undefined') {
+            if (typeof window.TonConnect === 'undefined') {
                 console.error("❌ TonConnect is not loaded. Check the script URL.");
                 alert("TonConnect failed to load. Please refresh the page.");
                 return;
             }
 
-            console.log("✅ TonConnect Loaded:", TonConnect);
+            console.log("✅ TonConnect Loaded:", window.TonConnect);
             
             // Initialize TonConnect with your manifest URL
-            const tonConnect = new TonConnect.TonConnect({
+            const tonConnect = new window.TonConnect({
                 manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
             });
 
