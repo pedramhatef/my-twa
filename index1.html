@@ -45,64 +45,63 @@
         document.addEventListener("DOMContentLoaded", async function () {
             console.log("Initializing TonConnect...");
 
-            const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
-
-            if (!TonConnect) {
-                console.error("TonConnect is not loaded. Check script URL.");
-                alert("TonConnect is not defined. Make sure the script is loaded correctly.");
+            if (typeof TonConnect === 'undefined') {
+                console.error("TonConnect is not loaded. Check the script URL.");
+                alert("TonConnect is not loaded. Please refresh the page.");
                 return;
             }
 
             console.log("TonConnect is available:", TonConnect);
-
+            
+            // Initialize TonConnect with your manifest URL
             const tonConnect = new TonConnect({
-                manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
+                manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
             });
 
             document.getElementById("connectWallet").addEventListener("click", async () => {
-    try {
-        console.log("Fetching available wallets...");
+                try {
+                    console.log("Fetching available wallets...");
 
-        // Get available wallets
-        const wallets = await tonConnect.getWallets();
-        console.log("Available wallets:", wallets);
+                    // Get the list of wallets
+                    const wallets = await tonConnect.getWallets();
+                    console.log("Available wallets:", wallets);
 
-        if (wallets.length === 0) {
-            alert("No TON wallets found. Please install a compatible wallet.");
-            return;
-        }
+                    if (wallets.length === 0) {
+                        alert("No TON wallets found. Please install a compatible wallet.");
+                        return;
+                    }
 
-        // Find a wallet with a valid `universalLink`
-        const selectedWallet = wallets.find(wallet => wallet.universalLink);
+                    // Select a wallet with a valid universal link
+                    const selectedWallet = wallets.find(wallet => wallet.universalLink);
 
-        if (!selectedWallet) {
-            alert("No available wallet with a valid link.");
-            return;
-        }
+                    if (!selectedWallet) {
+                        alert("No available wallet with a valid connection link.");
+                        return;
+                    }
 
-        console.log("Connecting to wallet:", selectedWallet);
+                    console.log("Opening Wallet Selection Modal...");
 
-        // Use the correct universal link to initiate the connection
-        await tonConnect.connect({ universalLink: selectedWallet.universalLink });
+                    // Open wallet selection modal (for Telegram Mini Apps)
+                    await tonConnect.connect({ universalLink: selectedWallet.universalLink });
 
-        console.log("Wallet connection initiated...");
+                    console.log("Wallet connection initiated...");
 
-        // Listen for connection success
-        tonConnect.onStatusChange((walletInfo) => {
-            console.log("Wallet connected:", walletInfo);
-            alert("Wallet Connected!");
-        });
+                    // Listen for successful connection
+                    tonConnect.onStatusChange((walletInfo) => {
+                        console.log("Wallet connected:", walletInfo);
+                        alert("Wallet Connected!");
+                    });
 
-    } catch (error) {
-        console.error("Wallet connection failed:", error);
-        alert("Error connecting wallet.");
-    }
-});
-});
+                } catch (error) {
+                    console.error("Wallet connection failed:", error);
+                    alert("Error connecting wallet. Check the console for details.");
+                }
+            });
 
             document.getElementById("startGame").addEventListener("click", () => {
                 alert("Game Started!");
             });
+
         });
     </script>
 </body>
