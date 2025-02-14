@@ -19,23 +19,11 @@
                 try {
                     console.log("🚀 Initializing TonConnect...");
 
-                    // Get available wallets
-                    const wallets = await tonConnect.getWallets();
-                    console.log("🛠 Available wallets:", wallets);
-
-                    // Find Telegram Wallet in the available wallets
-                    const wallet = wallets.find(w => w.appName === "telegram-wallet");
-
-                    if (!wallet) {
-                        alert("⚠️ Telegram Wallet not found! Please install the Telegram app.");
-                        return;
-                    }
-
-                    console.log("🔗 Connecting to Wallet:", wallet);
-
-                    // Open the Telegram Wallet link
-                    if (wallet.universalLink) {
-                        window.location.href = wallet.universalLink;
+                    // Open TON Wallet directly
+                    const universalLink = tonConnect.connect({ jsBridgeKey: 'tonkeeper' });
+                    
+                    if (universalLink) {
+                        window.location.href = universalLink;
                     } else {
                         alert("❌ Could not open Telegram Wallet. Try manually opening: https://t.me/wallet?attach=wallet");
                     }
