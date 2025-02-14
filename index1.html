@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
 
-    <!-- Load TonConnect SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,67 +42,83 @@
     <button id="startGame">Start Game</button>
 
     <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            console.log("Initializing TonConnect...");
-
-            if (typeof TonConnect === 'undefined') {
-                console.error("❌ TonConnect is not loaded. Check the script URL.");
-                alert("TonConnect failed to load. Please refresh the page.");
-                return;
-            }
-
-            console.log("✅ TonConnect Loaded:", TonConnect);
-
-            // Initialize TonConnect with your manifest URL
-            const tonConnect = new TonConnect.TonConnect({
-                manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
+        function loadTonConnect() {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.src = "https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js";
+                script.onload = () => {
+                    console.log("✅ TonConnect script loaded.");
+                    resolve();
+                };
+                script.onerror = () => {
+                    console.error("❌ Failed to load TonConnect script.");
+                    reject(new Error("TonConnect script failed to load"));
+                };
+                document.head.appendChild(script);
             });
+        }
 
-            document.getElementById("connectWallet").addEventListener("click", async () => {
-                try {
-                    console.log("Fetching available wallets...");
+        async function initializeTonConnect() {
+            try {
+                console.log("Initializing TonConnect...");
+                await loadTonConnect();
 
-                    // Get the list of wallets
-                    const wallets = await tonConnect.getWallets();
-                    console.log("Available wallets:", wallets);
-
-                    if (wallets.length === 0) {
-                        alert("No TON wallets found. Please install a compatible wallet.");
-                        return;
-                    }
-
-                    // Select a wallet with a valid universal link
-                    const selectedWallet = wallets.find(wallet => wallet.universalLink);
-
-                    if (!selectedWallet) {
-                        alert("No available wallet with a valid connection link.");
-                        return;
-                    }
-
-                    console.log("Opening Wallet Selection Modal...");
-
-                    // Open wallet selection modal (for Telegram Mini Apps)
-                    await tonConnect.connect({ universalLink: selectedWallet.universalLink });
-
-                    console.log("✅ Wallet connection initiated...");
-
-                    // Listen for successful connection
-                    tonConnect.onStatusChange((walletInfo) => {
-                        console.log("✅ Wallet connected:", walletInfo);
-                        alert("Wallet Connected!");
-                    });
-
-                } catch (error) {
-                    console.error("❌ Wallet connection failed:", error);
-                    alert("Error connecting wallet. Check the console for details.");
+                if (typeof TonConnect === 'undefined') {
+                    throw new Error("TonConnect is not defined after script load.");
                 }
-            });
 
-            document.getElementById("startGame").addEventListener("click", () => {
-                alert("Game Started!");
-            });
+                console.log("✅ TonConnect is available:", TonConnect);
 
-        });
+                // Initialize TonConnect with your manifest URL
+                const tonConnect = new TonConnect.TonConnect({
+                    manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
+                });
+
+                document.getElementById("connectWallet").addEventListener("click", async () => {
+                    try {
+                        console.log("Fetching available wallets...");
+                        const wallets = await tonConnect.getWallets();
+                        console.log("Available wallets:", wallets);
+
+                        if (wallets.length === 0) {
+                            alert("No TON wallets found. Please install a compatible wallet.");
+                            return;
+                        }
+
+                        // Select a wallet with a valid universal link
+                        const selectedWallet = wallets.find(wallet => wallet.universalLink);
+
+                        if (!selectedWallet) {
+                            alert("No available wallet with a valid connection link.");
+                            return;
+                        }
+
+                        console.log("Opening Wallet Selection Modal...");
+                        await tonConnect.connect({ universalLink: selectedWallet.universalLink });
+
+                        console.log("✅ Wallet connection initiated...");
+
+                        tonConnect.onStatusChange((walletInfo) => {
+                            console.log("✅ Wallet connected:", walletInfo);
+                            alert("Wallet Connected!");
+                        });
+
+                    } catch (error) {
+                        console.error("❌ Wallet connection failed:", error);
+                        alert("Error connecting wallet. Check the console for details.");
+                    }
+                });
+
+                document.getElementById("startGame").addEventListener("click", () => {
+                    alert("Game Started!");
+                });
+
+            } catch (error) {
+                console.error("❌ TonConnect Initialization Failed:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", initializeTonConnect);
     </script>
 </body>
 </html>
