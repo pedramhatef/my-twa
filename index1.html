@@ -42,7 +42,7 @@
     <button id="startGame">Start Game</button>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
             console.log("Initializing TonConnect...");
 
             const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
@@ -61,15 +61,26 @@
 
             document.getElementById("connectWallet").addEventListener("click", async () => {
                 try {
-                    console.log("Opening Wallet Selection Modal...");
+                    console.log("Fetching available wallets...");
 
-                    // Open TonConnect UI modal for wallet selection
-                    tonConnect.ui.openModal();
+                    // Get available wallets
+                    const wallets = await tonConnect.getWallets();
+                    console.log("Available wallets:", wallets);
 
-                    tonConnect.onStatusChange((walletInfo) => {
-                        console.log("Wallet connected:", walletInfo);
-                        alert("Wallet Connected!");
-                    });
+                    if (wallets.length > 0) {
+                        // Open the first available wallet for connection
+                        await tonConnect.connect({ universalLink: wallets[0].universalLink });
+                        console.log("Wallet connection initiated...");
+
+                        // Listen for connection success
+                        tonConnect.onStatusChange((walletInfo) => {
+                            console.log("Wallet connected:", walletInfo);
+                            alert("Wallet Connected!");
+                        });
+
+                    } else {
+                        alert("No TON wallet found. Please install a compatible wallet.");
+                    }
 
                 } catch (error) {
                     console.error("Wallet connection failed:", error);
