@@ -41,36 +41,22 @@
     <!-- Start Game Button -->
     <button id="startGame">Start Game</button>
 
-    <script>
-        function loadTonConnect() {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement("script");
-                script.src = "https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js";
-                script.onload = () => {
-                    console.log("✅ TonConnect script loaded.");
-                    resolve();
-                };
-                script.onerror = () => {
-                    console.error("❌ Failed to load TonConnect script.");
-                    reject(new Error("TonConnect script failed to load"));
-                };
-                document.head.appendChild(script);
-            });
-        }
-
+    <script type="module">
         async function initializeTonConnect() {
             try {
                 console.log("Initializing TonConnect...");
-                await loadTonConnect();
 
-                if (typeof TonConnect === 'undefined') {
-                    throw new Error("TonConnect is not defined after script load.");
+                // Dynamically import the SDK as an ESM module
+                const TonConnectModule = await import("https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js");
+                
+                if (!TonConnectModule || !TonConnectModule.TonConnect) {
+                    throw new Error("TonConnect module failed to load.");
                 }
 
-                console.log("✅ TonConnect is available:", TonConnect);
+                console.log("✅ TonConnect is available:", TonConnectModule.TonConnect);
 
                 // Initialize TonConnect with your manifest URL
-                const tonConnect = new TonConnect.TonConnect({
+                const tonConnect = new TonConnectModule.TonConnect({
                     manifestUrl: "https://pedramhatef.github.io/my-twa/tonconnect-manifest.json"
                 });
 
@@ -122,3 +108,4 @@
     </script>
 </body>
 </html>
+
