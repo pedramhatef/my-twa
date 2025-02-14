@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TON Wallet Connection</title>
-
+    
+    <!-- ✅ Load TonConnect SDK via CDN -->
     <script>
         function sdkLoaded() {
             console.log("✅ TonConnect SDK loaded successfully.");
@@ -15,8 +16,6 @@
             alert("❌ Failed to load TonConnect SDK. Check console for details.");
         }
     </script>
-    
-    <!-- ✅ Load TonConnect SDK via CDN -->
     <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js" onload="sdkLoaded()" onerror="sdkLoadError()"></script>
 
     <script>
