@@ -41,6 +41,8 @@
                             // Open TON Wallet directly
                             const universalLink = tonConnect.connect({ jsBridgeKey: 'tonkeeper' });
                             
+                            console.log("🔗 Universal Link:", universalLink);
+                            
                             if (universalLink) {
                                 window.location.href = universalLink;
                             } else {
@@ -65,7 +67,11 @@
                         }
                     }
 
-                    document.getElementById("connect-wallet-btn").addEventListener("click", connectWallet);
+                    document.getElementById("connect-wallet-btn").addEventListener("click", () => {
+                        console.log("🔘 Connect Wallet button clicked");
+                        connectWallet();
+                    });
+
                 } catch (error) {
                     console.error("❌ Initialization error:", error);
                     alert("❌ Initialization error. Check console for details.");
