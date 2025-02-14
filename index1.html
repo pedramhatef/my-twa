@@ -1,109 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        h1 {
-            margin-top: 50px;
-            color: #333;
-        }
-        button {
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TonConnect Wallet Connection</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@1.0.0/dist/tonconnect.min.js"></script>
 </head>
 <body>
-    <h1>Welcome to the Telegram Mini App!</h1>
+  <h1>Connect Your Ton Wallet</h1>
 
-    <!-- Connect Wallet Button -->
-    <button id="connectWallet">Connect Wallet</button>
+  <!-- Connect Wallet Button -->
+  <button id="connect-wallet-btn">Connect Wallet</button>
 
-    <!-- Start Game Button -->
-    <button id="startGame">Start Game</button>
+  <h2>Game</h2>
+  <p>Guess a number between 1 and 5 to receive rewards.</p>
+  
+  <div id="game-container">
+    <button id="guess-1">1</button>
+    <button id="guess-2">2</button>
+    <button id="guess-3">3</button>
+    <button id="guess-4">4</button>
+    <button id="guess-5">5</button>
+  </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            console.log("Initializing TonConnect...");
-
-            const TonConnect = window.TonConnectSDK ? window.TonConnectSDK.TonConnect : null;
-
-            if (!TonConnect) {
-                console.error("TonConnect is not loaded. Check script URL.");
-                alert("TonConnect is not defined. Make sure the script is loaded correctly.");
-                return;
-            }
-
-            console.log("TonConnect is available:", TonConnect);
-
-            const tonConnect = new TonConnect({
-                manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json'
-            });
-
-            document.getElementById("connectWallet").addEventListener("click", async () => {
-    try {
-        console.log("Fetching available wallets...");
-
-        // Get available wallets
-        const wallets = await tonConnect.getWallets();
-        console.log("Available wallets:", wallets);
-
-        if (wallets.length === 0) {
-            alert("No TON wallets found. Please install a compatible wallet.");
-            return;
-        }
-
-        // Debug log for wallet selection
-        const selectedWallet = wallets.find(wallet => wallet.universalLink);
-        console.log("Selected Wallet:", selectedWallet);
-        console.log("Selected Wallet universalLink:", selectedWallet?.universalLink);
-
-        if (!selectedWallet || !selectedWallet.universalLink) {
-            alert("No available wallet with a valid universal link.");
-            return;
-        }
-
-        console.log("Connecting to wallet via bridge:", selectedWallet);
-
-        // Try connecting using the bridge URL
-        await tonConnect.connect({ bridgeUrl: selectedWallet.bridgeUrl });
-        console.log("Wallet connection initiated via bridge...");
-
-        tonConnect.onStatusChange((walletInfo) => {
-            console.log("Wallet connected:", walletInfo);
-            alert("Wallet Connected!");
-        });
-
-    } catch (error) {
-        console.error("Wallet connection failed:", error);
-        alert("Error connecting wallet.");
-    }
-
-            });
-
-            document.getElementById("startGame").addEventListener("click", () => {
-                alert("Game Started!");
-            });
-        });
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
