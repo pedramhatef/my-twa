@@ -1,7 +1,7 @@
 // Initialize TonConnect
 const tonConnect = new TonConnect({
   bridgeUrl: 'https://walletbot.me/tonconnect-bridge/bridge', // Your TonConnect bridge URL
-  manifestUrl: 'https://your_manifest_url_here', // Your manifest URL
+  manifestUrl: 'https://pedramhatef.github.io/my-twa/tonconnect-manifest.json', // Your manifest URL
 });
 
 // Connect Wallet Button
